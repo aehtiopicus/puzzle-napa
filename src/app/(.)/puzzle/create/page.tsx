@@ -4,27 +4,28 @@ import { ImageUploadArea } from "@/components/puzzle/image-upload-area";
 import { PuzzleSidebar } from "@/components/puzzle/puzzle-sidebar";
 import { PuzzlePattern } from "@/utils/puzzle-config";
 import { generatePuzzleLines, PuzzleLine } from "@/utils/puzzle-generator";
-import { ReadonlyURLSearchParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { use, useCallback, useEffect, useState } from "react";
 
 export default function PuzzleCreatePage({
   searchParams,
 }: {
-  searchParams: ReadonlyURLSearchParams;
+  searchParams: Promise<{ image?: string }>;
 }) {
   const router = useRouter();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const resolvedParams = use(searchParams);
 
   // Handle image query param from Gallery
   useEffect(() => {
     (async () => {
-      const imageParam = searchParams.get("image");
+      const imageParam = resolvedParams.image;
       if (imageParam) {
         // Decode if needed, though searchParams.get usually handles decoding of param values
         setImageUrl(imageParam);
       }
     })();
-  }, [searchParams]);
+  }, [resolvedParams]);
 
   const [pieceCount, setPieceCount] = useState<number>(4);
   const [pattern, setPattern] = useState<PuzzlePattern>("classic");
