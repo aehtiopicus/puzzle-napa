@@ -4,12 +4,15 @@ import { ImageUploadArea } from "@/components/puzzle/image-upload-area";
 import { PuzzleSidebar } from "@/components/puzzle/puzzle-sidebar";
 import { PuzzlePattern } from "@/utils/puzzle-config";
 import { generatePuzzleLines, PuzzleLine } from "@/utils/puzzle-generator";
-import { useRouter, useSearchParams } from "next/navigation";
+import { ReadonlyURLSearchParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
-export default function PuzzleCreatePage() {
+export default function PuzzleCreatePage({
+  searchParams,
+}: {
+  searchParams: ReadonlyURLSearchParams;
+}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   // Handle image query param from Gallery
