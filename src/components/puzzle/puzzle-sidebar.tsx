@@ -160,7 +160,7 @@ export function PuzzleSidebar({
           variant="outline"
         >
           <Download className="w-4 h-4 mr-2" />
-          Download Image
+          Download SVG
         </Button>
 
         {disabled && (

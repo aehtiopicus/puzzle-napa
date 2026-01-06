@@ -87,47 +87,58 @@ export default function PuzzleCreatePage() {
     router,
   ]);
 
-  const handleExport = useCallback(() => {
+  const handleExport = useCallback(async () => {
     if (!imageUrl || !puzzleLines.length || imageDimensions.width === 0) return;
 
-    const canvas = document.createElement("canvas");
-    canvas.width = imageDimensions.width;
-    canvas.height = imageDimensions.height;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    try {
+      // 1. Convert image to Base64 to embed in SVG (makes it portable)
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const reader = new FileReader();
 
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = imageUrl;
+      reader.onloadend = () => {
+        const base64data = reader.result as string;
 
-    img.onload = () => {
-      // 1. Draw the background image
-      ctx.drawImage(img, 0, 0, imageDimensions.width, imageDimensions.height);
+        // 2. Construct SVG content
+        const svgContent = `
+          <svg 
+            width="${imageDimensions.width}" 
+            height="${imageDimensions.height}" 
+            viewBox="0 0 ${imageDimensions.width} ${imageDimensions.height}" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <image href="${base64data}" width="${imageDimensions.width}" height="${imageDimensions.height}" />
+            <g 
+              stroke="rgba(255, 255, 255, 0.8)" 
+              stroke-width="4" 
+              stroke-dasharray="8 8" 
+              stroke-linecap="round" 
+              fill="none"
+            >
+              ${puzzleLines
+                .map((line) => `<path d="${line.path}" />`)
+                .join("\n")}
+            </g>
+          </svg>
+        `.trim();
 
-      // 2. Draw the puzzle lines (matching the overlay style)
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.8)"; // Visible white lines
-      ctx.lineWidth = 4;
-      ctx.setLineDash([8, 8]); // Dashed pattern
-      ctx.lineCap = "round";
-
-      puzzleLines.forEach((line) => {
-        const p = new Path2D(line.path);
-        ctx.stroke(p);
-      });
-
-      // 3. Trigger download
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        const url = URL.createObjectURL(blob);
+        // 3. Trigger download
+        const url = URL.createObjectURL(
+          new Blob([svgContent], { type: "image/svg+xml" })
+        );
         const a = document.createElement("a");
         a.href = url;
-        a.download = "puzzle-export.png";
+        a.download = "puzzle-export.svg";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-      }, "image/png");
-    };
+      };
+
+      reader.readAsDataURL(blob);
+    } catch (error) {
+      console.error("Error exporting SVG:", error);
+    }
   }, [imageUrl, puzzleLines, imageDimensions]);
 
   return (
