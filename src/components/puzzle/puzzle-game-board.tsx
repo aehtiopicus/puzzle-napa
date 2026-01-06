@@ -42,7 +42,7 @@ export function PuzzleGameBoard({
   const boardHeight = rows * pieceHeight;
 
   // Calculate scale to fit the board in a reasonable size
-  const maxBoardSize = 600;
+  const maxBoardSize = window.innerHeight + 280;
   const scale = Math.min(1, maxBoardSize / Math.max(boardWidth, boardHeight));
 
   return (
@@ -115,22 +115,6 @@ export function PuzzleGameBoard({
             })
           )}
         </div>
-
-        {/* Grid labels for debugging - optional */}
-        {/* {Array.from({ length: rows }).map((_, row) =>
-          Array.from({ length: cols }).map((_, col) => (
-            <div
-              key={`label-${row}-${col}`}
-              className="absolute text-xs text-muted-foreground pointer-events-none"
-              style={{
-                left: `${(col * pieceWidth * scale) + (pieceWidth * scale / 2) - 10}px`,
-                top: `${(row * pieceHeight * scale) + (pieceHeight * scale / 2) - 6}px`,
-              }}
-            >
-              {row},{col}
-            </div>
-          ))
-        )} */}
       </div>
     </div>
   );

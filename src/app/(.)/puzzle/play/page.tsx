@@ -16,6 +16,7 @@ import { PuzzleLine } from "@/utils/puzzle-generator";
 import { ArrowLeft, RotateCcw, Trophy, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import Confetti from "react-confetti-boom";
 
 export default function PuzzlePlayPage() {
   const router = useRouter();
@@ -166,28 +167,37 @@ export default function PuzzlePlayPage() {
 
       {/* Completion Modal */}
       {isComplete && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-card pb-8 pl-8 rounded-lg shadow-xl max-w-md w-full mx-4">
-            <div className="flex justify-end pt-4 pr-4">
-              <Button variant="outline" onClick={onCloseModal}>
-                <XIcon />
-              </Button>
-            </div>
-            <div className="text-center">
-              <Trophy className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
-              <h2 className="text-3xl font-bold mb-2">Congratulations!</h2>
-              <p className="text-muted-foreground mb-6">
-                You&apos;ve completed the puzzle!
-              </p>
-              <div className="flex gap-3 justify-center">
-                <Button onClick={handleReset}>Play Again</Button>
-                <Button variant="outline" onClick={handleBackToCreate}>
-                  Create New Puzzle
+        <>
+          <Confetti
+            mode="boom"
+            particleCount={500}
+            spreadDeg={360}
+            colors={["#FF0000", "#00FF00", "#0000FF"]}
+            effectCount={3}
+          />
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-card pb-8 pl-8 rounded-lg shadow-xl max-w-md w-full mx-4">
+              <div className="flex justify-end pt-4 pr-4">
+                <Button variant="outline" onClick={onCloseModal}>
+                  <XIcon />
                 </Button>
+              </div>
+              <div className="text-center">
+                <Trophy className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+                <h2 className="text-3xl font-bold mb-2">Congratulations!</h2>
+                <p className="text-muted-foreground mb-6">
+                  You&apos;ve completed the puzzle!
+                </p>
+                <div className="flex gap-3 justify-center">
+                  <Button onClick={handleReset}>Play Again</Button>
+                  <Button variant="outline" onClick={handleBackToCreate}>
+                    Create New Puzzle
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
