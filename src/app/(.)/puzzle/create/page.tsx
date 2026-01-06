@@ -4,12 +4,25 @@ import { ImageUploadArea } from "@/components/puzzle/image-upload-area";
 import { PuzzleSidebar } from "@/components/puzzle/puzzle-sidebar";
 import { PuzzlePattern } from "@/utils/puzzle-config";
 import { generatePuzzleLines, PuzzleLine } from "@/utils/puzzle-generator";
-import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 export default function PuzzleCreatePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  // Handle image query param from Gallery
+  useEffect(() => {
+    (async () => {
+      const imageParam = searchParams.get("image");
+      if (imageParam) {
+        // Decode if needed, though searchParams.get usually handles decoding of param values
+        setImageUrl(imageParam);
+      }
+    })();
+  }, [searchParams]);
+
   const [pieceCount, setPieceCount] = useState<number>(4);
   const [pattern, setPattern] = useState<PuzzlePattern>("classic");
   const [puzzleLines, setPuzzleLines] = useState<PuzzleLine[]>([]);
@@ -142,15 +155,7 @@ export default function PuzzleCreatePage() {
   }, [imageUrl, puzzleLines, imageDimensions]);
 
   return (
-    <div className="h-screen flex flex-col">
-      {/* Header */}
-      <header className="border-b border-border bg-card px-6 py-4">
-        <h1 className="text-3xl font-bold">Puzzle Creator</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Upload an image and create your custom jigsaw puzzle
-        </p>
-      </header>
-
+    <div className="h-[calc(100vh-4rem)] flex flex-col">
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
         <ImageUploadArea

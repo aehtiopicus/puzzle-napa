@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { PuzzleLine } from "@/utils/puzzle-generator";
 import { Upload } from "lucide-react";
-import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PuzzleOverlay } from "./puzzle-overlay";
 
@@ -130,14 +129,16 @@ export function ImageUploadArea({
         </div>
       ) : (
         <div className="relative w-full h-full flex items-center justify-center">
-          <Image
+          <img
             ref={imgRef}
             src={imageUrl}
             alt="Uploaded"
-            width={imageDimensions.width}
-            height={imageDimensions.height}
+            // We don't set explicit width/height here to allow CSS to control it
+            // and let the image load its natural dimensionality if needed,
+            // but constrained by the container via CSS.
             className="max-w-full max-h-full w-auto h-auto rounded-lg shadow-lg"
             onLoad={handleImageLoad}
+            crossOrigin="anonymous" // Important for canvas operations later
           />
           {imageDimensions.width > 0 && (
             <PuzzleOverlay

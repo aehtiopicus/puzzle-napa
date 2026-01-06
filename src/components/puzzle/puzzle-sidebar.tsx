@@ -51,7 +51,7 @@ export function PuzzleSidebar({
       rows = Math.max(2, rows);
 
       const nextPieces = cols * rows;
-      debugger;
+
       if (isNaN(nextPieces)) {
         return acc;
       }
