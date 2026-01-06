@@ -1,0 +1,140 @@
+# Project Rules & Context
+
+## Project Stack
+
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS v4
+- MongoDB + Mongoose
+- shadcn/ui components
+- Jest + React Testing Library
+
+## Core Principles
+
+### No MD documentation unless required
+
+- Never generate a MD file unless it's required by the user.
+
+### Server-First Architecture
+
+- ALWAYS prefer Server Components over Client Components
+- Only use 'use client' when absolutely necessary for:
+  - Interactive hooks (useState, useEffect, etc.)
+  - Browser-only APIs
+  - Event handlers requiring client-side state
+  - Navigation state (usePathname, useRouter, etc.)
+- Keep client-side JavaScript minimal
+- Use server actions for forms and mutations
+- Leverage async/await in Server Components for data fetching
+
+### File Structure
+
+- Follow Next.js App Router conventions strictly
+- Route groups use parentheses: (.) for nested layouts
+- Keep related components close to where they're used
+- Shared components in /src/components/
+- Utilities in /src/utils/ (no /src/lib/)
+- Organize by feature when possible
+- API logic in /src/api/
+
+### Component Architecture
+
+- Separate concerns: Data (server) → UI (server/client) → Interactive (client minimal)
+- Components must be 100% reusable
+- Configuration via props, never hardcoded
+- Always use TypeScript interfaces for props
+- Export from index files for clean imports
+
+### Styling
+
+- Tailwind CSS v4 utility classes only
+- Use comprehensive color system:
+  - Primary (blue): Main brand color
+  - Secondary (purple): Supporting brand color
+  - Tertiary (green): Success/affirmative color
+  - Each color has hover and active states
+- Consistent spacing and colors
+- Active states for interactive elements
+- Transition classes for smooth interactions
+
+### Naming Conventions
+
+- Components: PascalCase (MenuItem)
+- Files: kebab-case (menu-item.tsx)
+- Props interfaces: ComponentNameProps (MenuItemProps)
+- Utility functions: camelCase (cn, connectToDb)
+
+## Code Quality Standards
+
+### TypeScript
+
+- Define interfaces for all component props
+- Avoid 'any' type
+- Leverage type inference appropriately
+- Use Zod for runtime validation
+
+### Testing
+
+- Write tests for critical functionality
+- Use React Testing Library for component tests
+- Use Jest for unit tests
+- Test coverage for business logic
+
+### Organization
+
+- Group related files in feature folders
+- Barrel exports (index.ts) for clean imports
+- Files must be focused and single-purpose
+- Composition over inheritance
+- Keep components small and focused
+
+## Development Workflow
+
+- Verify no linter errors before completing
+- Run tests before committing
+- Ensure TypeScript compilation success
+- Don't commit until explicitly asked
+- Focused, atomic commits with descriptive messages
+
+## Architecture Decisions
+
+### Middleware
+
+- Simplified proxy middleware for custom headers
+- Injects x-url and x-pathname headers
+- Available to server components via headers()
+- Development logging enabled
+- Authentication logic removed (can be added later)
+
+### MongoDB Connection
+
+- Cached connection with global state
+- Environment variable validation
+- Connection pooling optimized for serverless
+- Event listeners for connection lifecycle
+- Graceful shutdown handlers
+
+### shadcn/ui Integration
+
+- Components installed to /src/components/ui/
+- Utils in /src/utils/cn.ts (not lib)
+- Configured for New York style
+- Using CSS variables for theming
+
+## Key Lessons
+
+1. Middleware in Next.js runs on every request matched by config
+2. For reactive navigation (active menu highlighting), usePathname() in client component is correct
+3. Server actions are preferred for forms and mutations
+4. MongoDB connections must be cached in Next.js serverless environment
+5. Tailwind CSS v4 uses @import instead of @tailwind directives
+
+## Future Patterns to Consider
+
+- Authentication (middleware can be extended)
+- State management (if needed beyond URL state)
+- API integration patterns
+- Error boundaries
+- Loading states and suspense boundaries
+- Multi-tenancy patterns
